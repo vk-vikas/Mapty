@@ -27,6 +27,7 @@ navigator.geolocation.getCurrentPosition(
   function (position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
+
     const coords = [latitude, longitude];
     const map = L.map("map").setView(coords, 13);
 
@@ -35,10 +36,24 @@ navigator.geolocation.getCurrentPosition(
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    L.marker(coords)
-      .addTo(map)
-      .bindPopup("A pretty CSS popup.<br> Easily customizable.")
-      .openPopup();
+    map.on("click", function (mapEvent) {
+      console.log(mapEvent);
+      const { lat, lng } = mapEvent.latlng;
+
+      L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(
+          L.popup({
+            maxwidth: 250,
+            minwidth: 100,
+            autoClose: false,
+            closeOnClick: false,
+            className: "running-popup",
+          })
+        )
+        .setPopupContent("workout")
+        .openPopup();
+    });
   },
   function () {
     alert("could not get your location");
